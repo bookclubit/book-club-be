@@ -29,7 +29,7 @@ bun install
 ### 4. Убрать Jest, ESLint из зависимостей
 
 ```bash
-bun remove eslint @eslint/js typescript-eslint eslint-plugin-prettier prettier globals jest @types/jest ts-jest
+bun remove eslint @eslint/js typescript-eslint eslint-plugin-prettier globals jest @types/jest ts-jest
 
 ```
 
@@ -50,135 +50,7 @@ bunx oxlint --init
 
 #### 5.2 Меняем базовый конфиг под себя:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-
-  "env": {
-    "builtin": true,
-    "node": true
-  },
-
-  "plugins": ["unicorn", "typescript", "oxc"],
-
-  "rules": {
-    // === базовые JS-правила (из стандартного конфига) ===
-    "for-direction": "warn",
-    "no-async-promise-executor": "warn",
-    "no-caller": "warn",
-    "no-class-assign": "warn",
-    "no-compare-neg-zero": "warn",
-    "no-cond-assign": "warn",
-    "no-const-assign": "warn",
-    "no-constant-binary-expression": "warn",
-    "no-constant-condition": "warn",
-    "no-control-regex": "warn",
-    "no-debugger": "warn",
-    "no-delete-var": "warn",
-    "no-dupe-class-members": "warn",
-    "no-dupe-else-if": "warn",
-    "no-dupe-keys": "warn",
-    "no-duplicate-case": "warn",
-    "no-empty-character-class": "warn",
-    "no-empty-pattern": "warn",
-    "no-empty-static-block": "warn",
-    "no-eval": "warn",
-    "no-ex-assign": "warn",
-    "no-extra-boolean-cast": "warn",
-    "no-func-assign": "warn",
-    "no-global-assign": "warn",
-    "no-import-assign": "warn",
-    "no-invalid-regexp": "warn",
-    "no-irregular-whitespace": "warn",
-    "no-loss-of-precision": "warn",
-    "no-new-native-nonconstructor": "warn",
-    "no-nonoctal-decimal-escape": "warn",
-    "no-obj-calls": "warn",
-    "no-self-assign": "warn",
-    "no-setter-return": "warn",
-    "no-shadow-restricted-names": "warn",
-    "no-sparse-arrays": "warn",
-    "no-this-before-super": "warn",
-    "no-unassigned-vars": "warn",
-    "no-unsafe-finally": "warn",
-    "no-unsafe-negation": "warn",
-    "no-unsafe-optional-chaining": "warn",
-    "no-unused-expressions": "warn",
-    "no-unused-labels": "warn",
-    "no-unused-private-class-members": "warn",
-    "no-unused-vars": "warn",
-    "no-useless-backreference": "warn",
-    "no-useless-catch": "warn",
-    "no-useless-escape": "warn",
-    "no-useless-rename": "warn",
-    "no-with": "warn",
-    "require-yield": "warn",
-    "use-isnan": "warn",
-    "valid-typeof": "warn",
-
-    // === oxc-специфичные правила ===
-    "oxc/bad-array-method-on-arguments": "warn",
-    "oxc/bad-char-at-comparison": "warn",
-    "oxc/bad-comparison-sequence": "warn",
-    "oxc/bad-min-max-func": "warn",
-    "oxc/bad-object-literal-comparison": "warn",
-    "oxc/bad-replace-all-arg": "warn",
-    "oxc/const-comparisons": "warn",
-    "oxc/double-comparisons": "warn",
-    "oxc/erasing-op": "warn",
-    "oxc/missing-throw": "warn",
-    "oxc/number-arg-out-of-range": "warn",
-    "oxc/only-used-in-recursion": "warn",
-    "oxc/uninvoked-array-callback": "warn",
-
-    // === TypeScript-правила (из стандартного + твои) ===
-    "typescript/await-thenable": "warn",
-    "typescript/no-array-delete": "warn",
-    "typescript/no-base-to-string": "warn",
-    "typescript/no-duplicate-enum-values": "warn",
-    "typescript/no-duplicate-type-constituents": "warn",
-    "typescript/no-extra-non-null-assertion": "warn",
-    "typescript/no-floating-promises": "warn",
-    "typescript/no-for-in-array": "warn",
-    "typescript/no-implied-eval": "warn",
-    "typescript/no-meaningless-void-operator": "warn",
-    "typescript/no-misused-new": "warn",
-    "typescript/no-misused-spread": "warn",
-    "typescript/no-non-null-asserted-optional-chain": "warn",
-    "typescript/no-redundant-type-constituents": "warn",
-    "typescript/no-this-alias": "warn",
-    "typescript/no-unnecessary-parameter-property-assignment": "warn",
-    "typescript/no-unsafe-declaration-merging": "warn",
-    "typescript/no-unsafe-unary-minus": "warn",
-    "typescript/no-useless-empty-export": "warn",
-    "typescript/no-wrapper-object-types": "warn",
-    "typescript/prefer-as-const": "warn",
-    "typescript/require-array-sort-compare": "warn",
-    "typescript/restrict-template-expressions": "warn",
-    "typescript/triple-slash-reference": "warn",
-    "typescript/unbound-method": "warn",
-
-    // — твоя настройка:
-    "typescript/no-explicit-any": "off",
-    "typescript/no-unsafe-argument": "warn",
-
-    // === unicorn-правила ===
-    "unicorn/no-await-in-promise-methods": "warn",
-    "unicorn/no-empty-file": "warn",
-    "unicorn/no-invalid-fetch-options": "warn",
-    "unicorn/no-invalid-remove-event-listener": "warn",
-    "unicorn/no-new-array": "warn",
-    "unicorn/no-single-promise-in-promise-methods": "warn",
-    "unicorn/no-thenable": "warn",
-    "unicorn/no-unnecessary-await": "warn",
-    "unicorn/no-useless-fallback-in-spread": "warn",
-    "unicorn/no-useless-length-check": "warn",
-    "unicorn/no-useless-spread": "warn",
-    "unicorn/prefer-set-size": "warn",
-    "unicorn/prefer-string-starts-ends-with": "warn"
-  }
-}
-```
+Для этого мигрируем исходный `eslint` конфиг при помощи помощи доп. инструмента от `oxc`.
 
 #### 5.3 Закомментируем правило "baseUrl": "./", в tsconfig
 
@@ -192,21 +64,15 @@ type‑aware режим oxlint работает поверх typescript-go (TS 7
 
 ```
 
-### 6 Перенести форматирование с Prettier на oxfmt
+### 6 Перенести форматирование (основное) с Prettier на oxfmt
 
-#### 6.1 Убрать Prettier из зависимостей
-
-```bash
-bun remove prettier
-```
-
-#### 6.2 Установка форматера oxfmt
+#### 6.1 Установка форматера oxfmt
 
 ```bash
 bun add -D oxfmt
 ```
 
-#### 6.3 Перенести форматирование с Prettier на oxfmt
+#### 6.2 Перенести форматирование с Prettier на oxfmt
 
 ```bash
 mv .prettierrc .oxfmtrc.jsonc
@@ -240,28 +106,7 @@ https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode
 
 Oxc сейчас в принципе не умеет форматировать JSON / JSON with Comments, только JS/TS, поэтому VS Code и показывает тебе окно «Oxc не может форматировать JSON with Comments». Поэтому для них оставляем Prettier
 
-```json
-  "oxc.enable": true,
-  "oxc.lint.run": "onType",
-  "oxc.fmt.experimental": true,
-  "oxc.configPath": ".oxlintrc.json",
-  "oxc.fmt.configPath": ".oxfmtrc.jsonc",
-  "editor.defaultFormatter": "oxc.oxc-vscode",
-  "[typescript]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "typescript.format.enable": false,
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-```
+Чтобы это работало - создаем локальный `settings.json`
 
 Cейчас type‑aware работает только в CLI (oxlint --type-aware), а редактор видит только те правила, которые не требуют типовой информации.
 
