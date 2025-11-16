@@ -13,6 +13,7 @@
     "start:prod": "bun dist/main.js",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
+    "lint-full:fix": "bun lint:fix ; prettier . --write",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "test": "bun test",
