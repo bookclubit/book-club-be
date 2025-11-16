@@ -1,13 +1,16 @@
 ### 1. Установи Bun официальным скриптом
+
 ```bash
 powershell -c "irm bun.sh/install.ps1|iex"
 ```
+
 #### 1.1 Убедись, что Bun попал в PATH (обычно установщик добавляет строки сам, но если нет — добавь вручную в ~/.bashrc или ~/.zshrc):​
 
 ```bash
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 ```
+
 https://bun.com/docs/installation
 
 ### 2. Установи Nest CLI глобально через Bun
@@ -29,8 +32,8 @@ bun install
 bun remove eslint @eslint/js typescript-eslint eslint-plugin-prettier prettier globals jest @types/jest ts-jest
 
 ```
-#### 4.1 Также удалим ESLint‑конфиг eslint.config.mjs, он больше не нужен
 
+#### 4.1 Также удалим ESLint‑конфиг eslint.config.mjs, он больше не нужен
 
 ### 5. Поставим oxlint (с type‑aware) через Bun
 
@@ -45,7 +48,7 @@ bun add -D oxlint oxlint-tsgolint
 bunx oxlint --init
 ```
 
-#### 5.2 Меняем базовый конфиг под себя: 
+#### 5.2 Меняем базовый конфиг под себя:
 
 ```json
 {
@@ -56,11 +59,7 @@ bunx oxlint --init
     "node": true
   },
 
-  "plugins": [
-    "unicorn",
-    "typescript",
-    "oxc"
-  ],
+  "plugins": ["unicorn", "typescript", "oxc"],
 
   "rules": {
     // === базовые JS-правила (из стандартного конфига) ===
@@ -179,7 +178,6 @@ bunx oxlint --init
     "unicorn/prefer-string-starts-ends-with": "warn"
   }
 }
-
 ```
 
 #### 5.3 Закомментируем правило "baseUrl": "./", в tsconfig
@@ -213,6 +211,7 @@ bun add -D oxfmt
 ```bash
 mv .prettierrc .oxfmtrc.jsonc
 ```
+
 #### 6.3 Внутри добавь ссылку на схему oxfmt (это не обязательно, но помогает IDE)
 
 ```JSON
@@ -223,6 +222,7 @@ mv .prettierrc .oxfmtrc.jsonc
 }
 
 ```
+
 #### 6.4 Настроить скрипты Bun + Oxc в package.json
 
 ```JSON
@@ -262,6 +262,7 @@ Oxc сейчас в принципе не умеет форматировать 
   },
 
 ```
+
 Cейчас type‑aware работает только в CLI (oxlint --type-aware), а редактор видит только те правила, которые не требуют типовой информации.
 
 ### 8 Удаляем не нужные зависимости
@@ -275,6 +276,7 @@ Cейчас type‑aware работает только в CLI (oxlint --type-awa
 ```bash
 bun remove ts-node ts-loader tsconfig-paths
 ```
+
 #### 8.2 ESLint / Prettier‑обвязка
 
 ```bash
@@ -305,4 +307,3 @@ bun remove source-map-support
     "test:e2e": "bun test test/**/*.e2e-spec.ts"
   },
 ```
-

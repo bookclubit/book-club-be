@@ -6,11 +6,7 @@
     "node": true
   },
 
-  "plugins": [
-    "unicorn",
-    "typescript",
-    "oxc"
-  ],
+  "plugins": ["unicorn", "typescript", "oxc"],
 
   "rules": {
     // === базовые JS-правила (из стандартного конфига) ===

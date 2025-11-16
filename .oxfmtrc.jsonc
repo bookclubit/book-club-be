@@ -1,5 +1,6 @@
 {
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  // ctrl + space для доступных настроек
+  "$schema": "./node_modules/oxfmt/configuration_schema.json", // дает подскази и валидацию настроек
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
 }
