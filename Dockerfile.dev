@@ -1,0 +1,12 @@
+FROM oven/bun:1
+
+RUN apt-get update -y && apt-get install -y openssl
+
+WORKDIR /usr/src/app
+
+COPY package.json bun.lock ./
+RUN bun install
+
+COPY prisma ./prisma
+ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
+RUN bunx prisma generate
