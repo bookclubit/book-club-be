@@ -1,9 +1,11 @@
+const { HEADER_PATTERN_STR } = require('./scripts/constants.js');
+
 module.exports = {
   extends: ['@commitlint/config-conventional'],
 
   parserPreset: {
     parserOpts: {
-      headerPattern: /^(\w+)(?:\(([^)]+)\))?: (.+) #(\d+)$/,
+      headerPattern: new RegExp(HEADER_PATTERN_STR),
       headerCorrespondence: ['type', 'scope', 'subject', 'ticket'],
     },
   },

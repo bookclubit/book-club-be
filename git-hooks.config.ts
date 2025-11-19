@@ -7,7 +7,8 @@ const config = {
     },
   },
 
-  'commit-msg': 'bunx --no -- commitlint --edit $1',
+  'commit-msg':
+    'bun scripts/verify-commit.ts $1 && bunx --no -- commitlint --edit $1',
   verbose: true,
 };
 
