@@ -1,12 +1,22 @@
-# Book club BackEnd
+# Book Club Backend
 
-### Just our pet project for us
+Pet‑проект на NestJS + Bun + Prisma + PostgreSQL.
 
-## Get started
+## Быстрый старт (dev, Docker)
 
-1. `bun install`
-2. add `.env` by `.env.example`
-3. `docker compose up -d`
-4. `bun run prisma:migrate`
-5. `bun run prisma:gen`
-6. `bun run start:dev`
+```bash
+cp .env.example .env
+docker compose -f docker-compose.dev.yml up --build
+```
+миграции
+
+```bash
+docker exec -it book-club-be-dev bunx prisma migrate dev
+```
+## Production
+
+- Образы: `antonpomazkov/book-club-be:<version>` в Docker Hub.
+- Прод‑окружение: `docker-compose.prod.yml` + `.env.prod`.
+- Workflow GitHub Actions: `.github/workflows/docker-build.yml`.
+
+Подробное описание деплоя и версионирования см. в `docs/deployment.md`.
