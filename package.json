@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "postinstall": "bunx git-hooks",
     "build": "bun run prisma:gen && bunx nest build",
     "start": "bun src/main.ts",
     "start:dev": "bun --hot src/main.ts",
@@ -35,6 +36,8 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
@@ -42,6 +45,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "bun-git-hooks": "^0.3.1",
     "dotenv-cli": "^11.0.0",
     "oxfmt": "^0.13.0",
     "oxlint": "^1.28.0",
