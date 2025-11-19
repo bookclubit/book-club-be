@@ -1,5 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { fullHeaderRegex, ticketRegex } from './constants.js';
+import {
+  fullHeaderRegex,
+  ticketRegex,
+  sepRegex,
+  mergeRegex,
+} from './constants.js';
 
 const msgPath = process.argv[2];
 
@@ -12,8 +17,8 @@ try {
   const rawMsg = readFileSync(msgPath, 'utf-8');
   const header = rawMsg.split('\n')[0].trim();
 
-  // 1. Быстрая проверка: если всё ок, уходим сразу
-  if (fullHeaderRegex.test(header)) {
+  // Быстрая проверка: если всё ок, уходим сразу
+  if (mergeRegex.test(header) || fullHeaderRegex.test(header)) {
     process.exit(0);
   }
 
@@ -30,8 +35,8 @@ try {
     hasError = true;
   }
 
-  if (!header.includes(': ')) {
-    console.error('🔴 Нет разделителя `: ` после типа.');
+  if (!sepRegex.test(header)) {
+    console.error('🔴 Нет разделителя (скорее всего `: `) после типа.');
     hasError = true;
   }
 
