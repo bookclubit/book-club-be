@@ -5,11 +5,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BotModule } from '../bot/bot.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { validateEnv } from '../common/validators/env.validate';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validate: validateEnv,
     }),
     BotModule,
     PrismaModule,
