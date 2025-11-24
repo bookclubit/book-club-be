@@ -2,17 +2,14 @@
   // 1. Prettier — наш форматер ПО УМОЛЧАНИЮ для "большего списка"
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-
   // 2. Отключаем встроенный TS-форматтер (все еще нужно)
   "typescript.format.enable": false,
-
   // 3. Настройки Oxc (пути к конфигам, если они вам нужны)
   "oxc.enable": true,
   "oxc.lint.run": "onType",
   "oxc.fmt.experimental": true,
   "oxc.configPath": ".oxlintrc.json",
   "oxc.fmt.configPath": ".oxfmtrc.jsonc",
-
   // 4. ИСКЛЮЧЕНИЯ: "Меньший список" отдаем Oxc
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
@@ -28,5 +25,39 @@
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  // 5. TODO Tree настройки
+  "todo-tree.general.tags": ["TODO", "FIXME", "BUG", "HACK", "IMPORTANT", "INFO"],
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check",
+      "type": "tag",
+      "foreground": "#90ee90"
+    },
+    "FIXME": {
+      "icon": "alert",
+      "type": "tag",
+      "foreground": "#ff4500"
+    },
+    "BUG": {
+      "icon": "issue-opened",
+      "type": "tag",
+      "foreground": "#ff0000"
+    },
+    "HACK": {
+      "icon": "flame",
+      "type": "tag",
+      "foreground": "#ffa500"
+    },
+    "IMPORTANT": {
+      "icon": "star",
+      "type": "tag",
+      "foreground": "#ffd700"
+    },
+    "INFO": {
+      "icon": "info",
+      "type": "tag",
+      "foreground": "#00bfff"
+    }
   }
 }
