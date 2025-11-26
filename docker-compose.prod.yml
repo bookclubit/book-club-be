@@ -1,0 +1,25 @@
+services:
+  app:
+    image: antonpomazkov/book-club-be:0.0.1
+    container_name: book-club-be
+    env_file:
+      - .env.prod
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: book-club-db-prod
+    restart: always
+    env_file:
+      - .env.prod
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata_prod:
