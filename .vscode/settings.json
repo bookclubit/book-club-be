@@ -37,17 +37,12 @@
   },
 
   // 5. TODO Tree настройки
-  "todo-tree.general.tags": ["TODO", "FIXME", "BUG", "HACK", "IMPORTANT", "INFO"],
+  "todo-tree.general.tags": ["TODO", "BUG", "HACK", "IMPORTANT", "INFO"],
   "todo-tree.highlights.customHighlight": {
     "TODO": {
       "icon": "check",
       "type": "tag",
       "foreground": "#90ee90"
-    },
-    "FIXME": {
-      "icon": "alert",
-      "type": "tag",
-      "foreground": "#ff4500"
     },
     "BUG": {
       "icon": "issue-opened",
