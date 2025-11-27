@@ -9,7 +9,7 @@
     "postinstall": "bunx git-hooks",
     "build": "bun run prisma:gen && bunx nest build",
     "start": "bun src/main.ts",
-    "start:dev": "bun --hot src/main.ts",
+    "start:dev": "infisical run --env=dev -- bun --hot src/main.ts",
     "start:debug": "bun --inspect --hot src/main.ts",
     "start:prod": "bun dist/main.js",
     "lint": "oxlint --type-aware",
