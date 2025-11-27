@@ -4,12 +4,41 @@ Backend книжного клуба для фронтенд-разработчи
 
 ## Get started
 
-1. `bun install`
-2. Скопируй `.env.example` → `.env`, заполни значения
-3. `docker compose up -d`
-4. `bun run prisma:migrate`
-5. `bun run prisma:gen`
-6. `bun run start:dev`
+1. Установите зависимости:
+
+```bash
+bun install
+```
+
+2. Настройте Infisical (секреты вместо локального `.env`):
+
+```bash
+npm install -g @infisical/cli
+infisical login -i
+```
+
+> `.infisical.json` уже в репозитории — повторный `infisical init` не нужен.
+
+3. Поднимите инфраструктуру:
+
+```bash
+docker compose up -d
+```
+
+4. Примените миграции и сгенерируйте Prisma client:
+
+```bash
+bun run prisma:migrate
+bun run prisma:gen
+```
+
+5. Запустите backend с секретами из Infisical:
+
+```bash
+bun run start:infisical
+```
+
+> **Без Infisical:** создайте `.env` по `.env.example` и запускайте через `bun run start:dev`. Подробнее — в [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Claude Code Setup
 
