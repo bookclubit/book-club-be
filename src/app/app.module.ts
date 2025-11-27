@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BotModule } from '../bot/bot.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { validateEnv } from '../common/validators/env.validate';
+import { validateEnv } from './validators/env.validation';
 
 @Module({
   imports: [
