@@ -36,5 +36,5 @@ bun run prisma:gen
 5. Запустите backend с секретами из Infisical:
 
 ```bash
-bun run start:dev
+bun run start:infisical
 ```
