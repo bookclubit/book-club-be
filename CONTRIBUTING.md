@@ -107,3 +107,44 @@ DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/bookclubdb
 Формат и требования к комментариям указаны в подробностях в docs/comment-tags.md.
 
 Просим строго придерживаться данных правил, чтобы сохранить порядок и качество кода.
+
+## Релизы и версионирование
+
+Проект использует [release-please](https://github.com/googleapis/release-please) для автоматического управления версиями и генерации CHANGELOG.
+
+### Как работает версионирование
+
+Версия определяется автоматически по Conventional Commits (semver):
+
+| Тип коммита | Эффект на версию | Пример |
+|---|---|---|
+| `fix(...)` | Patch (`0.0.1` -> `0.0.2`) | Исправление бага |
+| `feat(...)` | Minor (`0.1.0` -> `0.2.0`) | Новая функциональность |
+| `feat!(...)`/`BREAKING CHANGE` | Major (`0.x.x` -> `1.0.0`) | Ломающее изменение |
+
+> **Примечание:** пока версия < 1.0.0, `feat` повышает patch, а `BREAKING CHANGE` повышает minor (настроено через `bump-minor-pre-major`).
+
+### Что происходит автоматически
+
+1. При каждом push в `main` GitHub Action анализирует новые коммиты.
+2. Если есть releasable-коммиты (`feat`, `fix` и т.д.), создаётся или обновляется **Release PR**.
+3. Release PR содержит:
+   - Обновлённый `CHANGELOG.md`
+   - Обновлённую версию в `package.json`
+   - Обновлённый `.release-please-manifest.json`
+4. При мерже Release PR:
+   - Создаётся **GitHub Release** с тегом (например, `v0.1.0`).
+   - CHANGELOG и версия фиксируются в `main`.
+
+### Как выпустить релиз
+
+1. Работайте как обычно: пишите код, используйте Conventional Commits, мержите PR в `main`.
+2. Release-please автоматически создаст Release PR, когда накопятся изменения.
+3. Проверьте CHANGELOG в Release PR — убедитесь, что он корректен.
+4. Замержите Release PR — релиз и тег создадутся автоматически.
+
+### Конфигурация
+
+- Workflow: `.github/workflows/release-please.yml`
+- Конфиг: `release-please-config.json`
+- Манифест версий: `.release-please-manifest.json`
