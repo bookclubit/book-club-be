@@ -51,6 +51,10 @@ export class FeatureFlagService {
     return this.prisma.featureFlag.delete({ where: { name } });
   }
 
+  async findByName(name: string) {
+    return this.prisma.featureFlag.findUnique({ where: { name } });
+  }
+
   async findAll() {
     return this.prisma.featureFlag.findMany();
   }
