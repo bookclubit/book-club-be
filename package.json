@@ -48,6 +48,7 @@
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
     "bun-git-hooks": "^0.3.1",
+    "dotenv": "^17.3.1",
     "dotenv-cli": "^11.0.0",
     "oxfmt": "^0.13.0",
     "oxlint": "^1.28.0",
