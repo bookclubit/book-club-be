@@ -107,3 +107,227 @@ DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/bookclubdb
 Формат и требования к комментариям указаны в подробностях в docs/comment-tags.md.
 
 Просим строго придерживаться данных правил, чтобы сохранить порядок и качество кода.
+
+## Git Flow (Trunk-Based Development)
+
+Проект использует **Trunk-Based Development** (TBD) — стратегию, в которой весь код сливается в одну основную ветку (`main`).
+
+### Принципы
+
+- **`main` = trunk** — всегда в deployable-состоянии. Всё, что попало в main, может быть выкачено в прод.
+- **Короткоживущие ветки** — feature branch живёт **1–2 дня** максимум. Чем короче — тем лучше.
+- **Нет develop, staging и прочих долгоживущих веток.** Есть только main и временные ветки задач.
+- **Незаконченные фичи** попадают в main за **feature flags**, а не висят в отдельных ветках неделями.
+
+### Именование веток
+
+| Тип   | Формат               | Пример                    |
+| ----- | -------------------- | ------------------------- |
+| Фича  | `feat/{issue}-slug`  | `feat/#41-change-pg-port` |
+| Баг   | `fix/{issue}-slug`   | `fix/#40-faq-section`     |
+| Инфра | `infra/{issue}-slug` | `infra/#31-gitflow`       |
+| Эпик  | `scope/{issue}-slug` | `scope/#30-headless-cms`  |
+
+### Стратегия мержа
+
+- **Squash merge** — для обычных задач (одна фича, один баг). Все коммиты ветки схлопываются в один.
+- **Merge commit (no squash)** — для эпиков (`scope/`), чтобы сохранить историю отдельных шагов.
+
+### Коммиты
+
+Conventional Commits — обязательный формат. Проверяется через **commitlint**.
+
+```
+type(scope): описание #issue
+```
+
+Типы: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `revert`.
+
+Примеры:
+
+```
+feat(bot): add /start command #12
+fix(auth): handle expired token gracefully #34
+docs: add TBD workflow guide #47
+```
+
+## Работа с Feature Flags
+
+Feature flags позволяют мержить незаконченный код в main, не ломая продакшен. Код за выключенным флагом просто не выполняется.
+
+### Когда создавать флаг
+
+- Фича **не будет готова за один PR** (требует несколько итераций).
+- Нужен **постепенный rollout** (включить сначала для тестирования, потом для всех).
+- Фича **рискованная** и нужна возможность быстро откатить без деплоя.
+
+Если фича укладывается в один PR и точно готова — флаг не нужен.
+
+### Как создать флаг
+
+Отправить POST-запрос на Admin API:
+
+```bash
+POST /admin/feature-flags
+
+{
+  "name": "NEW_FEATURE_NAME",
+  "description": "Описание фичи",
+  "enabled": false
+}
+```
+
+Имя флага — `UPPER_SNAKE_CASE`, описательное. Например: `DUELS_SYSTEM`, `SRS_CARDS_V2`, `CLAN_WARS`.
+
+### Как использовать в коде
+
+Модуль feature flags предоставляет декоратор `@FeatureFlag()` и guard `FeatureFlagGuard`. Навешиваются на контроллер или отдельный endpoint:
+
+```typescript
+import { UseGuards } from '@nestjs/common';
+import { FeatureFlag, FeatureFlagGuard } from '../feature-flag/index.js';
+
+@UseGuards(FeatureFlagGuard)
+@FeatureFlag('DUELS_SYSTEM')
+@Get('/duels')
+async getDuels() {
+  return this.duelsService.findAll();
+}
+```
+
+Поведение guard:
+
+- Флаг **включён** (`enabled: true`) — запрос проходит.
+- Флаг **выключен** (`enabled: false`) — возвращается `404 Not Found` (endpoint как будто не существует).
+- Флаг **не найден в БД** — запрос проходит (allow by default).
+
+Кеширование: результат запроса к БД кешируется на 60 секунд (in-memory). После переключения флага изменение подхватится в течение минуты.
+
+### Переключение флага
+
+Включить:
+
+```bash
+PATCH /admin/feature-flags/DUELS_SYSTEM
+
+{
+  "enabled": true
+}
+```
+
+Выключить:
+
+```bash
+PATCH /admin/feature-flags/DUELS_SYSTEM
+
+{
+  "enabled": false
+}
+```
+
+### Lifecycle флага
+
+```
+Создание (POST) → Код за флагом → Merge в main → Тестирование → Toggle ON → Cleanup
+```
+
+1. **Создание** — при старте работы над фичей, флаг `enabled: false`.
+2. **Код за флагом** — весь новый функционал защищён декоратором.
+3. **Merge в main** — код попадает в trunk, но не доступен пользователям.
+4. **Тестирование** — включить флаг на dev/staging окружении.
+5. **Toggle ON** — включить в проде когда готово.
+6. **Cleanup** — после стабилизации удалить декоратор `@FeatureFlag()`, guard и сам флаг из БД (`DELETE /admin/feature-flags/DUELS_SYSTEM`). Это отдельный PR.
+
+> **Важно:** не забывайте про cleanup. Мёртвые флаги засоряют код и БД.
+
+## Пайплайн фичи (от задачи до main)
+
+Полный путь задачи от идеи до продакшена:
+
+### 1. Issue на GitHub
+
+Задача оформлена как issue в репозитории. Берёте issue в работу — назначаете себя.
+
+### 2. Создать ветку
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feat/#123-my-feature
+```
+
+### 3. Оценить нужен ли feature flag
+
+- Фича укладывается в один PR за 1–2 дня → **без флага**.
+- Фича требует несколько PR или рискованная → **создать флаг**.
+
+### 4. Написать код
+
+- Если нужен флаг — защитить endpoint декоратором `@FeatureFlag()`.
+- Коммиты в формате Conventional Commits.
+- Тесты — обязательны.
+
+### 5. PR в main
+
+```bash
+git push -u origin feat/#123-my-feature
+gh pr create --repo bookclubit/book-club-be
+```
+
+- Заполнить **PR-шаблон** (описание, тип изменений, чеклист).
+- Указать связанный issue.
+- Запросить ревью.
+
+### 6. Squash merge
+
+После одобрения ревьюером — squash merge в main. Ветка удаляется автоматически.
+
+### 7. Включить флаг (если есть)
+
+Когда фича проверена и готова к проду:
+
+```bash
+PATCH /admin/feature-flags/MY_FEATURE
+{ "enabled": true }
+```
+
+### 8. Cleanup
+
+Отдельным PR — удалить декоратор, guard и флаг из БД. Коммит:
+
+```
+refactor: remove MY_FEATURE feature flag #123
+```
+
+## Релизы
+
+Релизы автоматизированы через **release-please**.
+
+### Как это работает
+
+1. Conventional Commits определяют тип изменения версии (**semver**):
+   - `feat:` → **minor** (0.x.0)
+   - `fix:` → **patch** (0.0.x)
+   - `BREAKING CHANGE:` → **major** (x.0.0)
+
+2. **release-please** анализирует коммиты в main и автоматически создаёт **Release PR** с:
+   - Обновлённой версией в `package.json`.
+   - Сгенерированным `CHANGELOG.md`.
+
+3. При merge Release PR:
+   - Создаётся **git tag** (например `v0.3.0`).
+   - Публикуется **GitHub Release** с changelog.
+
+### Текущая стадия (< 1.0.0)
+
+Пока проект в стадии `0.x.x`, правила semver смещены:
+
+| Тип коммита        | Обычный semver | До 1.0.0          |
+| ------------------ | -------------- | ----------------- |
+| `fix:`             | patch          | **patch** (0.0.x) |
+| `feat:`            | minor          | **patch** (0.0.x) |
+| `BREAKING CHANGE:` | major          | **minor** (0.x.0) |
+
+### Что делать разработчику
+
+Ничего особенного — просто писать правильные Conventional Commits. Всё остальное release-please сделает сам. Не нужно вручную менять версию, создавать теги или писать changelog.
