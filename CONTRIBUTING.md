@@ -14,17 +14,19 @@
 один раз
 
 ```bash
+npm install -g @infisical/cli
 infisical login -i
-infisical init
 ```
 
 запуск dev-сервера с секретами
 
 ```bash
-bun run start:dev
+bun run start:infisical
 ```
 
 `.env` в репозиторий не коммитим; все реальные значения задаются в Infisical.
+
+> **Без Infisical:** если нет доступа к Infisical, создайте `.env` по `.env.example` и запускайте через `bun run start:dev`.
 
 ### Схемы валидации
 
